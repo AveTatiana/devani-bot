@@ -1,8 +1,12 @@
+import os
+import asyncio
+import nest_asyncio
+
 from telegram import Update, BotCommand
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 
-# Токен бота от BotFather
-BOT_TOKEN = "8047767965:AAH2vvk8dp5o_adppecK-JqMDeDFDlW4Q4s"
+# Токен из переменной окружения
+BOT_TOKEN = os.environ.get("BOT_TOKEN")
 
 # Команда /start
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -40,9 +44,5 @@ async def main():
     await app.run_polling()
 
 if __name__ == '__main__':
-    import asyncio
-    import nest_asyncio
     nest_asyncio.apply()
-    loop = asyncio.get_event_loop()
-    loop.create_task(main())
-    loop.run_forever()
+    asyncio.run(main())
