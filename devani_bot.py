@@ -3,7 +3,7 @@ import asyncio
 import nest_asyncio
 
 from telegram import Update, BotCommand
-from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
+from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, ContextTypes, filters
 
 # Токен из переменной окружения
 BOT_TOKEN = os.environ.get("BOT_TOKEN")
@@ -26,6 +26,10 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "🤍 Можно просто спросить. Или просто быть.\nЕсли что-то не работает — напиши /start."
     )
 
+# Ответ на обычные сообщения
+async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("Я передам твой вопрос Татьяне.")
+
 # Запуск бота
 async def main():
     app = ApplicationBuilder().token(BOT_TOKEN).build()
@@ -33,6 +37,7 @@ async def main():
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("oracle", oracle))
     app.add_handler(CommandHandler("help", help_command))
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))  # автоответ
 
     await app.bot.set_my_commands([
         BotCommand("start", "пробуждение связи с Девани"),
